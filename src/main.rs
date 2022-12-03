@@ -102,6 +102,8 @@ fn main() {
         
         let mut block_json = BufWriter::new(block_json);
         block_json.write_all(data.as_bytes()).expect("Can't write to file");
+
+        println!("File generated!");
    };
 }
 
