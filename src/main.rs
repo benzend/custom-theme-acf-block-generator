@@ -37,13 +37,7 @@ fn main() {
    if args.command == String::from("g") {
        println!("generating...");
 
-       let is_file_name = args.name.contains("-");
-
-       let (file_name, name): (String, String) = if is_file_name {
-            (args.name.to_string(), humanize_name(&args.name))
-       } else {
-           (args.name.to_lowercase().replace(" ", "-"), args.name.to_string())
-       };
+       let name = Name::from(&args.name);
 
         let data = formatdoc! {"
             <?php
@@ -77,8 +71,8 @@ fn main() {
                 </div>
             </section>
             ",
-            name = name,
-            file_name = file_name,
+            name = name.human_readable,
+            file_name = name.file_readable,
             fields = parse_fields(args.fields)
         };
 
@@ -108,8 +102,8 @@ fn main() {
               \"align\": \"full\"
             }}
             ",
-            name = name,
-            file_name = file_name,
+            name = name.human_readable,
+            file_name = name.file_readable,
             description = args.description,
         );
 
@@ -120,7 +114,7 @@ fn main() {
         let mut block_json = BufWriter::new(block_json);
         block_json.write_all(data.as_bytes()).expect("Can't write to file");
 
-        println!("{} files generated!", name);
+        println!("{} files generated!", name.human_readable);
    };
 }
 
@@ -140,6 +134,30 @@ fn parse_fields(fields: String) -> String {
     }).collect();
 
     appended.join("")
+}
+
+struct Name {
+    human_readable: String,
+    file_readable: String,
+}
+
+impl Name {
+    fn from(s: &str) -> Name {
+       let is_file_name = s.contains("-");
+
+       if is_file_name {
+           Name {
+               human_readable: humanize_name(&s.to_string()),
+               file_readable: s.to_string()
+           }
+       } else {
+           Name {
+                human_readable: s.to_string(),
+                file_readable: s.to_lowercase().replace(" ", "-")
+           }
+       }
+        
+    }
 }
 
 mod tests {
@@ -165,5 +183,66 @@ mod tests {
         ];
 
         tests.iter().for_each(|t| { assert_eq!(humanize_name(&t.input), t.output) });
+    }
+
+    #[cfg(test)]
+    use crate::Name;
+
+    #[test]
+    fn parse_name_human_readable() {
+        struct Test {
+            input: String,
+            output: String
+        }
+
+        let tests = vec![
+            Test {
+                input: "My Awesome Name".to_string(),
+                output: "My Awesome Name".to_string()
+            },
+            Test {
+                input: "my-awesome-name".to_string(),
+                output: "My Awesome Name".to_string()
+            },
+            Test {
+                input: "Name".to_string(),
+                output: "Name".to_string()
+            },
+            Test {
+                input: "awesome".to_string(),
+                output: "awesome".to_string()
+            }
+        ];
+
+        tests.iter().for_each(|t| { assert_eq!(Name::from(&t.input).human_readable, t.output) });
+    }
+    
+    #[test]
+    fn parse_name_file_readable() {
+        struct Test {
+            input: String,
+            output: String
+        }
+
+        let tests = vec![
+            Test {
+                input: "My Awesome Name".to_string(),
+                output: "my-awesome-name".to_string()
+            },
+            Test {
+                input: "my-awesome-name".to_string(),
+                output: "my-awesome-name".to_string()
+            },
+            Test {
+                input: "Who".to_string(),
+                output: "who".to_string()
+            },
+            Test {
+                input: "my".to_string(),
+                output: "my".to_string()
+            },
+        ];
+
+        tests.iter().for_each(|t| { assert_eq!(Name::from(&t.input).file_readable, t.output) });
     }
 }
