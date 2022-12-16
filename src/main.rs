@@ -36,6 +36,15 @@ fn main() {
 
    if args.command == String::from("g") {
        println!("generating...");
+
+       let is_file_name = args.name.contains("-");
+
+       let (file_name, name): (String, String) = if is_file_name {
+            (args.name.to_string(), humanize_name(&args.name))
+       } else {
+           (args.name.to_lowercase().replace(" ", "-"), args.name.to_string())
+       };
+
         let data = formatdoc! {"
             <?php
             /**
@@ -68,8 +77,8 @@ fn main() {
                 </div>
             </section>
             ",
-            name = humanize_name(&args.name),
-            file_name = args.name,
+            name = name,
+            file_name = file_name,
             fields = parse_fields(args.fields)
         };
 
@@ -99,8 +108,8 @@ fn main() {
               \"align\": \"full\"
             }}
             ",
-            name = humanize_name(&args.name),
-            file_name = args.name,
+            name = name,
+            file_name = file_name,
             description = args.description,
         );
 
@@ -111,7 +120,7 @@ fn main() {
         let mut block_json = BufWriter::new(block_json);
         block_json.write_all(data.as_bytes()).expect("Can't write to file");
 
-        println!("File generated!");
+        println!("{} files generated!", name);
    };
 }
 
