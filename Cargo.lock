@@ -6,6 +6,7 @@ version = 3
 name = "acf-block-template-generator"
 version = "0.1.0"
 dependencies = [
+ "capitalize",
  "clap",
  "indoc",
 ]
@@ -15,6 +16,12 @@ name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "capitalize"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "702cfe2f052c6542d55a9924efef63dd315c168cc4f315a824fb0f47da4e11c8"
 
 [[package]]
 name = "cc"

@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.0.29", features = ["derive"] }
 indoc = "1.0.7"
+capitalize = "0.1.0"

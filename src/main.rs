@@ -3,6 +3,7 @@ use std::fs::{File, create_dir_all};
 use std::env::current_dir;
 use std::io::{prelude::*, BufWriter};
 use indoc::formatdoc;
+use capitalize::Capitalize;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
@@ -48,7 +49,7 @@ fn main() {
             }}
 
             // Create class attribute allowing for custom \"className\" and \"align\" values.
-            $class_name = '{name}';
+            $class_name = '{file_name}';
             if ( ! empty( $block['className'] ) ) {{
                 $class_name .= ' ' . $block['className'];
             }}
@@ -61,8 +62,14 @@ fn main() {
             {fields}
 
             ?>
+
+            <section <?= $anchor; ?>class=\"<?= esc_attr( $class_name ); ?> py-section\">
+                <div class=\"grid-container\">
+                </div>
+            </section>
             ",
-            name = args.name,
+            name = humanize_name(&args.name),
+            file_name = args.name,
             fields = parse_fields(args.fields)
         };
 
@@ -78,7 +85,7 @@ fn main() {
 
         let data = formatdoc! ("
             {{
-              \"name\": \"acf/{name}\",
+              \"name\": \"acf/{file_name}\",
               \"title\": \"{name}\",
               \"description\": \"{description}\",
               \"style\": [ \"file:../../style.css\" ],
@@ -87,12 +94,13 @@ fn main() {
               \"keywords\": [\"custom\", \"block\"],
               \"acf\": {{
                   \"mode\": \"preview\",
-                  \"renderTemplate\": \"{name}.php\"
+                  \"renderTemplate\": \"{file_name}.php\"
               }},
               \"align\": \"full\"
             }}
             ",
-            name = args.name,
+            name = humanize_name(&args.name),
+            file_name = args.name,
             description = args.description,
         );
 
@@ -107,6 +115,10 @@ fn main() {
    };
 }
 
+fn humanize_name(name: &String) -> String {
+    name.split("-").map(|s| { s.capitalize() }).collect::<Vec<String>>().join(" ")
+}
+
 fn parse_fields(fields: String) -> String {
     let fields: Vec<&str> = fields.split_whitespace().collect();
 
@@ -119,4 +131,30 @@ fn parse_fields(fields: String) -> String {
     }).collect();
 
     appended.join("")
+}
+
+mod tests {
+    #[cfg(test)]
+    use crate::humanize_name;
+
+    #[test]
+    fn humanizes() {
+        struct Test {
+            input: String,
+            output: String
+        }
+
+        let tests = vec![
+            Test {
+                input: "hello".to_string(),
+                output: "Hello".to_string(),
+            },
+            Test {
+                input: "hey-jude".to_string(),
+                output: "Hey Jude".to_string()
+            }
+        ];
+
+        tests.iter().for_each(|t| { assert_eq!(humanize_name(&t.input), t.output) });
+    }
 }
