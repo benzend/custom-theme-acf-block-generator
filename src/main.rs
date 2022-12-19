@@ -76,10 +76,10 @@ fn main() {
             fields = parse_fields(args.fields)
         };
 
-        create_dir_all(format!("{}/blocks/{}", path, args.name)).expect("Can't create directory");
+        create_dir_all(format!("{}/blocks/{}", path, args.name.file_readable)).expect("Can't create directory");
 
         let php_template_file = File::create(
-            format!("{}/blocks/{}/{}.php", path, args.name, args.name)
+            format!("{}/blocks/{}/{}.php", path, args.name.file_readable, args.name.file_readable)
         ).expect("Can't create file");
 
         let mut php_template_file = BufWriter::new(php_template_file);
@@ -108,7 +108,7 @@ fn main() {
         );
 
         let block_json = File::create(
-            format!("{}/blocks/{}/block.json", path, args.name)
+            format!("{}/blocks/{}/block.json", path, args.name.file_readable)
         ).expect("Can't create file");
         
         let mut block_json = BufWriter::new(block_json);
