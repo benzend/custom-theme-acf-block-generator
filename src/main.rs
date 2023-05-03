@@ -243,6 +243,63 @@ mod tests {
             },
         ];
 
-        tests.iter().for_each(|t| { assert_eq!(Name::from(&t.input).file_readable, t.output) });
+        tests.iter().for_each(|t| { 
+            assert_eq!(Name::from(&t.input).file_readable, t.output) 
+        });
+    }
+
+    #[test]
+    fn parse_numbers_to_human_readable() {
+        struct Test {
+            input: String,
+            output: String,
+        }
+
+        let tests = vec![
+            Test {
+                input: "my-cool-file-v23".to_string(),
+                output: "My Cool File V23".to_string(),
+            },
+            Test {
+                input: "hey-83".to_string(),
+                output: "Hey 83".to_string(),
+            },
+            Test {
+                input: "83-hey".to_string(),
+                output: "83 Hey".to_string(),
+            },
+        ];
+
+        tests.iter().for_each(|t| {
+            assert_eq!(Name::from(&t.input).human_readable, t.output);
+        });
+    }
+
+    #[test]
+    fn parse_numbers_to_file_readable() {
+        struct Test {
+            input: String,
+            output: String,
+        }
+
+
+        let tests = vec![
+            Test {
+                input: "My Cool File V23".to_string(),
+                output: "my-cool-file-v23".to_string(),
+            },
+            Test {
+                input: "Hey 83".to_string(),
+                output: "hey-83".to_string(),
+            },
+            Test {
+                input: "83 Hey".to_string(),
+                output: "83-hey".to_string(),
+            },
+        ];
+
+        tests.iter().for_each(|t| {
+            assert_eq!(Name::from(&t.input).file_readable, t.output);
+        });
     }
 }
