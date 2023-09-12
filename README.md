@@ -7,14 +7,14 @@ See [this post](https://www.advancedcustomfields.com/resources/blocks/) for deta
 Make sure you have Rustup installed on your machine. You can find the installation [here](https://www.rust-lang.org/tools/install).
 
 Clone this repo
-```
+```bash
 git clone https://github.com/benzend/custom-theme-acf-block-generator.git
 ```
 
 Now with the repo and rustup installed, navigate to where you cloned this repo.
 
 Run this command to build binaries (cargo comes from rustup)
-```
+```bash
 cargo build --release
 ```
 
@@ -26,24 +26,24 @@ To run it, you can simply call the binary file
 ```
 
 To make this accessable globally add an _alias_
-```
+```bash
 alias acfblockgen='<full-path-to-binary-file>'
 ```
 
 ## How to use
 To generate a block
-```
+```bash
 acfblockgen -command g -name your-block-name -description "Your block description" -fields "background title description"
 ```
 
 You can also run this to see the list of arguments
-```
+```bash
 acfblockgen --help
 ```
 
 ## What is it actually doing
 When you run this in the root of your project
-```
+```bash
 acfblockgen -command g -name spicy-block -description "This is a spicy block" -fields "background title description"
 ```
 
@@ -72,7 +72,7 @@ your-project
 ```
 
 In `block.json`
-```
+```json
 {
   "name": "acf/spicy-block",
   "title": "spicy-block",
@@ -90,7 +90,7 @@ In `block.json`
 ```
 
 In `spicy-block.php`
-```
+```php
 <?php
 /**
  * spicy-block Template.
@@ -135,6 +135,6 @@ String - any
 
 Block fields
 ```
--fields | -d
+-fields | -f
 String - snake case
 ```
