@@ -66,9 +66,7 @@ fn main() {
 
             ?>
 
-            <section <?= $anchor; ?>class=\"<?= esc_attr( $class_name ); ?> py-section\">
-                <div class=\"grid-container\">
-                </div>
+            <section <?= $anchor; ?>class=\"<?= esc_attr( $class_name ); ?>\">
             </section>
             ",
             name = name.human_readable,
