@@ -61,7 +61,7 @@ fn main() {
             }}
 
             // Load values and assign defaults.
-           
+
             {fields}
 
             ?>
